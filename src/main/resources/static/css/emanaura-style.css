@@ -1,0 +1,803 @@
+/* Emanaura Brand Colors
+ * Primary (Dark Burgundy): #830000
+ * Secondary (Bright Red): #C10000
+ * Neutral/Light Gray: #D6D6D6
+ * Taupe: #BEA6A0
+ * Light Cream: #FFF4ED
+ * Soft Gold: #EDE9D0
+ */
+
+:root {
+    --emanaura-primary: #830000;
+    --emanaura-secondary: #C10000;
+    --emanaura-gray: #D6D6D6;
+    --emanaura-taupe: #BEA6A0;
+    --emanaura-cream: #FFF4ED;
+    --emanaura-gold: #EDE9D0;
+    --emanaura-dark: #4d0000;
+    --emanaura-light: #ffffff;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+    --radius: 8px;
+}
+
+/* Global Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--emanaura-cream);
+    color: #333;
+}
+
+.bg-primary {
+    background-color: var(--emanaura-primary) !important;
+}
+
+.btn-primary {
+    background-color: var(--emanaura-primary);
+    border-color: var(--emanaura-primary);
+    transition: var(--transition);
+}
+
+.btn-primary:hover {
+    background-color: var(--emanaura-dark);
+    border-color: var(--emanaura-dark);
+}
+
+.btn-outline-primary {
+    color: var(--emanaura-primary);
+    border-color: var(--emanaura-primary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--emanaura-primary);
+    color: white;
+}
+
+.text-primary {
+    color: var(--emanaura-primary) !important;
+}
+
+/* Navbar Styling */
+.navbar {
+    box-shadow: var(--shadow-md);
+    padding: 1rem 0;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 500;
+    transition: var(--transition);
+    padding: 0.5rem 1rem;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover,
+.navbar-dark .navbar-nav .nav-link.active {
+    color: var(--emanaura-gold);
+}
+
+/* Search Bar Styling */
+.search-container {
+    background: linear-gradient(135deg, var(--emanaura-primary), var(--emanaura-secondary));
+    padding: 4rem 0;
+    border-radius: 0 0 var(--radius) var(--radius);
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow-md);
+
+}
+
+.search-container .form-control {
+    border-radius: var(--radius);
+    padding: 0.8rem 1.5rem;
+    border: none;
+    box-shadow: var(--shadow-sm);
+}
+
+.search-container .btn {
+    border-radius: var(--radius);
+    padding: 0.8rem 1.5rem;
+    background-color: var(--emanaura-light);
+    color: var(--emanaura-primary);
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.search-container .btn:hover {
+    background-color: var(--emanaura-gold);
+    transform: translateY(-2px);
+}
+
+/* Category Sidebar */
+.category-sidebar {
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 2rem;
+}
+
+.category-sidebar .card-header {
+    background-color: var(--emanaura-primary);
+    color: white;
+    font-weight: 600;
+    padding: 1rem;
+    border-bottom: none;
+}
+
+.category-sidebar .list-group-item {
+    padding: 0.8rem 1.2rem;
+    border-left: 3px solid transparent;
+    transition: var(--transition);
+}
+
+.category-sidebar .list-group-item:hover {
+    background-color: var(--emanaura-cream);
+    border-left: 3px solid var(--emanaura-secondary);
+}
+
+.category-sidebar .list-group-item.active {
+    background-color: var(--emanaura-primary);
+    border-color: var(--emanaura-primary);
+    color: white;
+    border-left: 3px solid var(--emanaura-gold);
+}
+
+/* Product Cards */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.product-card {
+    background-color: white;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    height: 100%;
+    border: none;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.product-card .card-img-container {
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 220px;
+    background-color: var(--emanaura-cream);
+}
+
+.product-card img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    transition: var(--transition);
+}
+
+.product-card:hover img {
+    transform: scale(1.05);
+}
+
+.product-card .card-body {
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card .product-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: #333;
+    min-height: 2.5rem;
+}
+
+.product-card .product-price {
+    margin-top: auto;
+}
+
+.product-card .discount-price {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--emanaura-primary);
+}
+
+.product-card .original-price {
+    font-size: 0.9rem;
+    text-decoration: line-through;
+    color: #6c757d;
+}
+
+.product-card .discount-percent {
+    font-size: 0.9rem;
+    color: #198754;
+    font-weight: 600;
+}
+
+.product-card .btn {
+    margin-top: 1rem;
+}
+
+/* Pagination */
+.pagination {
+    margin-top: 2rem;
+}
+
+.pagination .page-link {
+    color: var(--emanaura-primary);
+    border-color: #dee2e6;
+    transition: var(--transition);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--emanaura-primary);
+    border-color: var(--emanaura-primary);
+}
+
+.pagination .page-link:hover {
+    background-color: var(--emanaura-cream);
+    color: var(--emanaura-primary);
+}
+
+/* Main Container */
+.main-container {
+    background-color: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    color: var(--emanaura-primary);
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 0.5rem;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50%;
+    height: 3px;
+    background-color: var(--emanaura-secondary);
+}
+
+/* Footer */
+.footer {
+    background: linear-gradient(135deg, var(--emanaura-primary), var(--emanaura-dark));
+    color: white;
+    padding: 2rem 0;
+    margin-top: 3rem;
+}
+
+.footer-logo {
+    max-width: 150px;
+    margin-bottom: 1rem;
+}
+
+.footer a {
+    color: var(--emanaura-cream);
+    transition: var(--transition);
+}
+
+.footer a:hover {
+    color: var(--emanaura-gold);
+    text-decoration: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .search-container {
+        padding: 1.5rem 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .product-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .search-container .btn {
+        margin-top: 1rem;
+        width: 100%;
+    }
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animated {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+
+
+
+
+
+
+/* Add these styles to your existing CSS file */
+
+/* Category and Subcategory styling */
+.category-item {
+    position: relative;
+}
+
+.subcategory-list {
+    display: none;
+    margin-bottom: 0;
+}
+
+.subcategory-list.show {
+    display: block;
+}
+
+.subcategory-item {
+    padding-left: 2.5rem !important;
+    background-color: var(--emanaura-cream);
+    border-left: 3px solid transparent;
+    font-size: 0.9rem;
+}
+
+.subcategory-item:hover {
+    background-color: rgba(190, 166, 160, 0.2);
+    border-left: 3px solid var(--emanaura-secondary);
+}
+
+.subcategory-item.active {
+    background-color: var(--emanaura-primary);
+    color: white;
+    border-color: var(--emanaura-primary);
+    border-left: 3px solid var(--emanaura-gold);
+}
+
+.subcategory-toggle {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.show + .subcategory-toggle,
+.active .subcategory-toggle {
+    transform: rotate(180deg);
+}
+
+
+
+
+
+
+
+/* Welcome Banner Styles */
+.welcome-banner {
+    background-color: var(--emanaura-cream);
+    padding: 3rem 0;
+    margin-bottom: 3rem;
+    border-bottom: 1px solid rgba(131, 0, 0, 0.1);
+}
+
+.feature-box {
+    text-align: center;
+    padding: 2rem 1.5rem;
+    border-radius: var(--radius);
+    background: white;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.feature-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--emanaura-primary), var(--emanaura-secondary));
+    opacity: 0;
+    z-index: -1;
+    transition: var(--transition);
+}
+
+.feature-box:hover::before {
+    opacity: 1;
+}
+
+.feature-box i {
+    font-size: 2.5rem;
+    color: var(--emanaura-primary);
+    margin-bottom: 1.5rem;
+    transition: var(--transition);
+}
+
+.feature-box h3 {
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--emanaura-dark);
+    transition: var(--transition);
+}
+
+.feature-box p {
+    color: #666;
+    transition: var(--transition);
+}
+
+.feature-box:hover i,
+.feature-box:hover h3,
+.feature-box:hover p {
+    color: white;
+}
+
+.feature-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(131, 0, 0, 0.15);
+}
+
+/* Featured Banner Styles */
+.featured-banner {
+    background: linear-gradient(135deg, var(--emanaura-primary), var(--emanaura-dark));
+    color: white;
+    padding: 4rem 0;
+    margin-bottom: 3rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.featured-banner::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(237, 233, 208, 0.15) 0%, rgba(237, 233, 208, 0) 70%);
+    z-index: 1;
+}
+
+.featured-banner .container {
+    position: relative;
+    z-index: 2;
+}
+
+.featured-content {
+    padding-right: 2rem;
+}
+
+.featured-content span {
+    display: inline-block;
+    background-color: var(--emanaura-gold);
+    color: var(--emanaura-dark);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.featured-content h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.featured-content p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+.featured-banner img {
+    border-radius: var(--radius);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    transition: var(--transition);
+    transform: perspective(1000px) rotateY(-5deg);
+}
+
+.featured-banner:hover img {
+    transform: perspective(1000px) rotateY(-8deg) scale(1.02);
+}
+
+.btn-outline-light {
+    border-width: 2px;
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-outline-light:hover {
+    color: var(--emanaura-primary);
+    background-color: white;
+}
+
+.btn-outline-light::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: white;
+    transition: all 0.4s ease;
+    z-index: -1;
+}
+
+.btn-outline-light:hover::after {
+    left: 0;
+}
+
+/* Latest Products Styles */
+.latest-products {
+    padding: 4rem 0;
+    background-color: white;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-title h2 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--emanaura-dark);
+    position: relative;
+    display: inline-block;
+}
+
+.section-title h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(to right, var(--emanaura-primary), var(--emanaura-secondary));
+    border-radius: 2px;
+}
+
+.section-title p {
+    color: #666;
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+}
+
+.product-card {
+    border: none;
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: var(--transition);
+    margin-bottom: 1.5rem;
+    position: relative;
+    background-color: white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.product-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: var(--emanaura-secondary);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    z-index: 2;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.product-thumb {
+    position: relative;
+    overflow: hidden;
+    background-color: var(--emanaura-cream);
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 220px;
+}
+
+.product-thumb img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    transition: transform 0.5s ease;
+}
+
+.product-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(131, 0, 0, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.product-card:hover .product-overlay {
+    opacity: 1;
+}
+
+.product-card:hover .product-thumb img {
+    transform: scale(1.1);
+}
+
+.product-info {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.product-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--emanaura-dark);
+    transition: var(--transition);
+}
+
+.product-title a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.product-title a:hover {
+    color: var(--emanaura-secondary);
+}
+
+.product-price {
+    margin-bottom: 1rem;
+}
+
+.current-price {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--emanaura-primary);
+}
+
+.old-price {
+    font-size: 0.9rem;
+    text-decoration: line-through;
+    color: #999;
+    margin-left: 0.5rem;
+}
+
+.product-action .btn {
+    width: 100%;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: var(--transition);
+}
+
+.product-action .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(193, 0, 0, 0.2);
+}
+
+/* View All Button */
+.text-center .btn {
+    padding: 0.75rem 2.5rem;
+    font-weight: 600;
+    border-width: 2px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.text-center .btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to right, var(--emanaura-primary), var(--emanaura-secondary));
+    transition: all 0.4s ease;
+    z-index: -1;
+}
+
+.text-center .btn:hover::before {
+    left: 0;
+}
+
+.text-center .btn:hover {
+    color: white;
+    border-color: var(--emanaura-primary);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 992px) {
+    .featured-content h2 {
+        font-size: 2rem;
+    }
+
+    .featured-content {
+        padding-right: 0;
+        margin-bottom: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .feature-box {
+        margin-bottom: 1.5rem;
+    }
+
+    .featured-content h2 {
+        font-size: 1.8rem;
+    }
+
+    .section-title h2 {
+        font-size: 1.8rem;
+    }
+}
+
+/* Animation Enhancements */
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.feature-box:hover i {
+    animation: float 1.5s ease-in-out infinite;
+}
+
+/* Gradient Border Effect for Product Cards */
+.product-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(to right, var(--emanaura-primary), var(--emanaura-secondary));
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.product-card:hover::after {
+    opacity: 1;
+}

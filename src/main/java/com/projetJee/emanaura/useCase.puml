@@ -1,0 +1,91 @@
+@startuml EmanauraUseCaseDiagram
+
+' Acteurs
+actor "Visiteur" as Visitor
+actor "Client" as Client
+actor "Administrateur" as Admin
+
+' Cas d'utilisation généraux
+usecase "S'inscrire" as Register
+usecase "Se connecter" as Login
+usecase "Réinitialiser mot de passe" as ResetPassword
+usecase "Rechercher des produits" as SearchProducts
+usecase "Consulter les produits" as ViewProducts
+usecase "Consulter détails produit" as ViewProductDetails
+
+' Cas d'utilisation du client
+usecase "Gérer son panier" as ManageCart
+usecase "Ajouter au panier" as AddToCart
+usecase "Modifier quantités" as UpdateCartQuantity
+usecase "Passer une commande" as PlaceOrder
+usecase "Consulter ses commandes" as ViewOrders
+usecase "Modifier son profil" as EditProfile
+usecase "Changer mot de passe" as ChangePassword
+
+' Cas d'utilisation de l'administrateur
+usecase "Gérer les catégories" as ManageCategories
+usecase "Ajouter une catégorie" as AddCategory
+usecase "Modifier une catégorie" as EditCategory
+usecase "Supprimer une catégorie" as DeleteCategory
+usecase "Gérer les produits" as ManageProducts
+usecase "Ajouter un produit" as AddProduct
+usecase "Modifier un produit" as EditProduct
+usecase "Supprimer un produit" as DeleteProduct
+usecase "Gérer les utilisateurs" as ManageUsers
+usecase "Activer/Désactiver un compte" as ToggleUserStatus
+usecase "Ajouter un administrateur" as AddAdmin
+usecase "Gérer les commandes" as ManageOrders
+usecase "Mettre à jour statut commande" as UpdateOrderStatus
+usecase "Rechercher des commandes" as SearchOrders
+
+' Relations pour le visiteur
+Visitor --> Register
+Visitor --> Login
+Visitor --> ResetPassword
+Visitor --> SearchProducts
+Visitor --> ViewProducts
+Visitor --> ViewProductDetails
+
+' Relations pour le client
+Client --> SearchProducts
+Client --> ViewProducts
+Client --> ViewProductDetails
+Client --> ManageCart
+Client --> PlaceOrder
+Client --> ViewOrders
+Client --> EditProfile
+Client --> ChangePassword
+
+' Relations pour l'administrateur
+Admin --> ManageCategories
+Admin --> ManageProducts
+Admin --> ManageUsers
+Admin --> ManageOrders
+Admin --> EditProfile
+Admin --> ChangePassword
+
+' Inclusions et extensions
+ManageCart ..> AddToCart : include
+ManageCart ..> UpdateCartQuantity : include
+
+ManageCategories ..> AddCategory : include
+ManageCategories ..> EditCategory : include
+ManageCategories ..> DeleteCategory : include
+
+ManageProducts ..> AddProduct : include
+ManageProducts ..> EditProduct : include
+ManageProducts ..> DeleteProduct : include
+
+ManageUsers ..> ToggleUserStatus : include
+ManageUsers ..> AddAdmin : include
+
+ManageOrders ..> UpdateOrderStatus : include
+ManageOrders ..> SearchOrders : include
+
+PlaceOrder ..> ManageCart : include
+
+' Héritage
+Client --|> Visitor
+Admin --|> Client
+
+@enduml

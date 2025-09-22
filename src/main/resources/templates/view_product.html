@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+	  th:replace="~{base::layout(~{::section})}">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Emanaura - View Product</title>
+</head>
+<body>
+<section>
+	<div class="product-view-container">
+		<!-- Fil d'Ariane -->
+		<div class="breadcrumb-container">
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="/">Accueil</a></li>
+					<li class="breadcrumb-item"><a href="/products">Produits</a></li>
+					<li class="breadcrumb-item active" aria-current="page">[[${product.title}]]</li>
+				</ol>
+			</nav>
+		</div>
+
+		<!-- Produit principal -->
+		<div class="product-main-container">
+			<div class="product-gallery">
+				<div class="product-main-image">
+					<img th:src="@{'/img/product_img/'+${product.image}}" alt="Product Image">
+				</div>
+			</div>
+
+			<div class="product-info">
+				<h1 class="product-title">[[${product.title}]]</h1>
+
+				<div class="product-meta">
+					<span class="product-category"><i class="fas fa-tag"></i> [[${product.category}]]</span>
+					<span class="product-stock" th:if="${product.stock > 0}">
+                        <i class="fas fa-check-circle"></i> En stock
+                    </span>
+					<span class="product-stock out-of-stock" th:unless="${product.stock > 0}">
+                        <i class="fas fa-times-circle"></i> Rupture de stock
+                    </span>
+				</div>
+
+				<div class="product-price">
+					<span class="current-price">[[${product.price}]] MAD</span>
+				</div>
+
+				<div class="product-description">
+					<h3>Description</h3>
+					<p>[[${product.description}]]</p>
+				</div>
+
+				<div class="product-actions">
+					<a th:href="@{'/user/addCart/'+${product.id}}" class="add-to-cart-button"
+					   sec:authorize="isAuthenticated()" th:if="${product.stock > 0}">
+						<i class="fas fa-shopping-cart"></i> Ajouter au panier
+					</a>
+<!--					<a th:href="@{/signin}" class="add-to-cart-button" sec:authorize="!isAuthenticated()" th:if="${product.stock > 0}">-->
+<!--						<i class="fas fa-shopping-cart"></i> Ajouter au panier-->
+<!--					</a>-->
+					<button class="out-of-stock-button" th:unless="${product.stock > 0}" disabled>
+						<i class="fas fa-exclamation-triangle"></i> Produit indisponible
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Section des commentaires -->
+		<div class="comments-container">
+			<div class="comments-header">
+				<h2>Avis Clients <span class="comment-count">([[${comments != null ? comments.size() : 0}]])</span></h2>
+			</div>
+
+<!--			&lt;!&ndash; Message de succès ou d'erreur &ndash;&gt;-->
+<!--			<div th:if="${session.succMsg}" class="alert alert-success fade-in" role="alert">-->
+<!--				<i class="fas fa-check-circle me-2"></i> [[${session.succMsg}]]-->
+<!--			</div>-->
+
+<!--			<div th:if="${session.errorMsg}" class="alert alert-danger fade-in" role="alert">-->
+<!--				<i class="fas fa-exclamation-circle me-2"></i> [[${session.errorMsg}]]-->
+<!--			</div>-->
+
+			<!-- Alerts Container -->
+			<div class="row mb-4">
+				<div class="col-md-12">
+					<th:block th:if="${session.succMsg}">
+						<div class="alert alert-success text-center" role="alert">
+							<i class="fas fa-check-circle me-2"></i> [[${session.succMsg}]]
+							<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+						</div>
+					</th:block>
+
+					<th:block th:if="${session.errorMsg}">
+						<div class="alert alert-danger text-center" role="alert">
+							<i class="fas fa-exclamation-circle me-2"></i> [[${session.errorMsg}]]
+							<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+						</div>
+					</th:block>
+				</div>
+			</div>
+
+
+			<!-- Formulaire d'ajout de commentaire -->
+			<div class="add-comment-form" sec:authorize="isAuthenticated()">
+				<form th:action="@{/user/addComment}" method="post">
+					<input type="hidden" name="productId" th:value="${product.id}">
+					<div class="form-group">
+						<label for="commentContent">Partagez votre avis sur ce produit</label>
+						<textarea class="form-control" id="commentContent" name="content" rows="3"
+								  placeholder="Votre commentaire ici..." required></textarea>
+					</div>
+					<button type="submit" class="btn-post-comment">
+						<i class="fas fa-paper-plane"></i> Publier
+					</button>
+				</form>
+			</div>
+
+<!--			&lt;!&ndash; Message pour les utilisateurs non connectés &ndash;&gt;-->
+<!--			<div class="login-prompt" sec:authorize="!isAuthenticated()">-->
+<!--				<div class="login-message">-->
+<!--					<i class="fas fa-user-circle"></i>-->
+<!--					<p>Connectez-vous pour partager votre avis sur ce produit.</p>-->
+<!--					<a th:href="@{/signin}" class="btn-login">Se connecter</a>-->
+<!--				</div>-->
+<!--			</div>-->
+
+			<!-- Liste des commentaires -->
+			<div class="comments-list">
+				<div th:if="${comments == null || comments.empty}" class="no-comments">
+					<i class="far fa-comment-dots"></i>
+					<p>Aucun avis pour ce produit. Soyez le premier à partager votre expérience!</p>
+				</div>
+
+				<div th:each="comment, commentStat : ${comments}" th:class="${commentStat.odd}? 'comment-item odd' : 'comment-item'" th:id="'comment-' + ${comment.id}">
+					<div class="comment-header">
+						<div class="comment-user">
+							<img th:src="@{'/img/profile_img/' + ${comment.user.profileImage}}" alt="User Avatar">
+							<div class="user-details">
+								<h4 class="user-name">[[${comment.user.name}]]</h4>
+								<div class="comment-date">
+									<i class="far fa-calendar-alt"></i>
+									<span th:text="${#temporals.format(comment.createdAt, 'dd MMM yyyy')}"></span>
+									<span class="time" th:text="${#temporals.format(comment.createdAt, 'HH:mm')}"></span>
+									<span th:if="${comment.updatedAt != comment.createdAt}" class="edited-label">(Modifié)</span>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="comment-body" th:id="'comment-content-' + ${comment.id}">
+						<p>[[${comment.content}]]</p>
+					</div>
+
+					<!-- Formulaire d'édition (caché par défaut) -->
+					<div th:id="'edit-form-' + ${comment.id}" class="edit-comment-form" style="display: none;">
+						<form th:action="@{/user/updateComment}" method="post">
+							<input type="hidden" name="commentId" th:value="${comment.id}">
+							<input type="hidden" name="productId" th:value="${product.id}">
+							<div class="form-group">
+								<textarea class="form-control" name="content" rows="3" required th:text="${comment.content}"></textarea>
+							</div>
+							<div class="edit-actions">
+								<button type="submit" class="btn-save">
+									<i class="fas fa-save"></i> Enregistrer
+								</button>
+								<button type="button" class="btn-cancel" th:onclick="'cancelEdit(' + ${comment.id} + ')'">
+									<i class="fas fa-times"></i> Annuler
+								</button>
+							</div>
+						</form>
+					</div>
+
+					<!-- Actions sur le commentaire -->
+					<div class="comment-actions" th:if="${user != null}">
+						<!-- Options pour le propriétaire du commentaire -->
+						<th:block th:if="${user.id == comment.user.id}">
+							<button class="btn-edit" th:onclick="'editComment(' + ${comment.id} + ')'">
+								<i class="fas fa-edit"></i> Modifier
+							</button>
+							<a th:href="@{'/user/deleteComment/' + ${comment.id} + '/' + ${product.id}}"
+							   class="btn-delete"
+							   onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire?')">
+								<i class="fas fa-trash"></i> Supprimer
+							</a>
+						</th:block>
+
+						<!-- Option pour l'administrateur -->
+						<th:block th:if="${user.role == 'ROLE_ADMIN' && user.id != comment.user.id}">
+							<a th:href="@{'/admin/deleteComment/' + ${comment.id} + '/' + ${product.id}}"
+							   class="btn-delete-admin"
+							   onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce commentaire?')">
+								<i class="fas fa-trash-alt"></i> Supprimer (Admin)
+							</a>
+						</th:block>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- CSS pour la page produit et les commentaires -->
+	<style>
+		/* Variables de couleurs Emanaura */
+		:root {
+			--primary: #830000;
+			--primary-light: #9e2626;
+			--primary-dark: #5a0000;
+			--secondary: #C10000;
+			--secondary-light: #e41a1a;
+			--neutral-gray: #D6D6D6;
+			--taupe: #BEA6A0;
+			--light-cream: #FFF4ED;
+			--soft-gold: #EDE9D0;
+			--text-dark: #333333;
+			--text-light: #777777;
+			--success: #28a745;
+			--danger: #dc3545;
+			--warning: #ffc107;
+			--white: #ffffff;
+			--box-shadow: 0 6px 15px rgba(131, 0, 0, 0.1);
+			--box-shadow-hover: 0 10px 25px rgba(131, 0, 0, 0.15);
+			--transition: all 0.3s ease;
+			--border-radius: 6px;
+			--border-radius-lg: 12px;
+		}
+
+		/* Conteneur principal */
+		.product-view-container {
+			max-width: 1200px;
+			margin: 3rem auto;
+			padding: 0 1.5rem;
+			font-family: 'Poppins', sans-serif;
+			color: var(--text-dark);
+		}
+
+		/* Fil d'Ariane */
+		.breadcrumb-container {
+			margin-bottom: 2rem;
+		}
+
+		.breadcrumb {
+			padding: 0.75rem 1rem;
+			background-color: var(--light-cream);
+			border-radius: var(--border-radius);
+		}
+
+		.breadcrumb-item a {
+			color: var(--primary);
+			text-decoration: none;
+			transition: var(--transition);
+		}
+
+		.breadcrumb-item a:hover {
+			color: var(--secondary);
+		}
+
+		.breadcrumb-item.active {
+			color: var(--text-light);
+			font-weight: 500;
+		}
+
+		/* Conteneur du produit principal */
+		.product-main-container {
+			display: flex;
+			flex-wrap: wrap;
+			background-color: var(--white);
+			border-radius: var(--border-radius-lg);
+			box-shadow: var(--box-shadow);
+			overflow: hidden;
+			margin-bottom: 3rem;
+		}
+
+		/* Galerie d'images du produit */
+		.product-gallery {
+			flex: 1;
+			min-width: 300px;
+			padding: 2rem;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background-color: var(--light-cream);
+		}
+
+		.product-main-image {
+			width: 100%;
+			max-width: 400px;
+			height: auto;
+			overflow: hidden;
+			border-radius: var(--border-radius);
+		}
+
+		.product-main-image img {
+			width: 100%;
+			height: auto;
+			object-fit: contain;
+			transition: transform 0.5s ease;
+		}
+
+		.product-main-image:hover img {
+			transform: scale(1.05);
+		}
+
+		/* Informations sur le produit */
+		.product-info {
+			flex: 1;
+			min-width: 300px;
+			padding: 2.5rem;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.product-title {
+			font-size: 2.2rem;
+			font-weight: 700;
+			color: var(--primary);
+			margin-bottom: 1rem;
+			line-height: 1.2;
+			position: relative;
+			padding-bottom: 0.5rem;
+		}
+
+		.product-title::after {
+			content: '';
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 60px;
+			height: 3px;
+			background: linear-gradient(to right, var(--primary), var(--secondary));
+			border-radius: 1.5px;
+		}
+
+		.product-meta {
+			display: flex;
+			align-items: center;
+			margin-bottom: 1.5rem;
+			flex-wrap: wrap;
+			gap: 1rem;
+		}
+
+		.product-category, .product-stock {
+			display: inline-flex;
+			align-items: center;
+			padding: 0.4rem 0.8rem;
+			background-color: var(--light-cream);
+			border-radius: 20px;
+			font-size: 0.9rem;
+			color: var(--primary);
+		}
+
+		.product-category i, .product-stock i {
+			margin-right: 0.4rem;
+		}
+
+		.product-stock.out-of-stock {
+			background-color: #fff0f0;
+			color: var(--danger);
+		}
+
+		.product-price {
+			margin-bottom: 2rem;
+			display: flex;
+			align-items: baseline;
+		}
+
+		.current-price {
+			font-size: 2.5rem;
+			font-weight: 700;
+			color: var(--primary);
+		}
+
+		.product-description {
+			margin-bottom: 2.5rem;
+		}
+
+		.product-description h3 {
+			font-size: 1.2rem;
+			font-weight: 600;
+			margin-bottom: 1rem;
+			color: var(--primary);
+		}
+
+		.product-description p {
+			font-size: 1rem;
+			line-height: 1.7;
+			color: var(--text-light);
+		}
+
+		.product-actions {
+			margin-top: auto;
+		}
+
+		.add-to-cart-button {
+			display: inline-block;
+			padding: 1rem 2rem;
+			background-color: var(--primary);
+			color: var(--white);
+			border: none;
+			border-radius: var(--border-radius);
+			font-size: 1rem;
+			font-weight: 600;
+			text-decoration: none;
+			cursor: pointer;
+			transition: var(--transition);
+			box-shadow: 0 4px 10px rgba(131, 0, 0, 0.2);
+		}
+
+		.add-to-cart-button:hover {
+			background-color: var(--primary-light);
+			transform: translateY(-2px);
+			box-shadow: 0 6px 15px rgba(131, 0, 0, 0.3);
+			color: var(--white);
+		}
+
+		.add-to-cart-button i {
+			margin-right: 0.5rem;
+		}
+
+		.out-of-stock-button {
+			display: inline-block;
+			padding: 1rem 2rem;
+			background-color: var(--neutral-gray);
+			color: var(--text-dark);
+			border: none;
+			border-radius: var(--border-radius);
+			font-size: 1rem;
+			font-weight: 600;
+			cursor: not-allowed;
+		}
+
+		.out-of-stock-button i {
+			margin-right: 0.5rem;
+			color: var(--danger);
+		}
+
+		/* Section des commentaires */
+		.comments-container {
+			background-color: var(--white);
+			border-radius: var(--border-radius-lg);
+			box-shadow: var(--box-shadow);
+			padding: 2rem;
+			margin-bottom: 3rem;
+		}
+
+		.comments-header {
+			margin-bottom: 2rem;
+			position: relative;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		.comments-header h2 {
+			font-size: 1.8rem;
+			font-weight: 700;
+			color: var(--primary);
+			margin-bottom: 0;
+			position: relative;
+			padding-bottom: 0.5rem;
+		}
+
+		.comments-header h2::after {
+			content: '';
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 50px;
+			height: 3px;
+			background: linear-gradient(to right, var(--primary), var(--secondary));
+			border-radius: 1.5px;
+		}
+
+		.comment-count {
+			font-size: 1rem;
+			font-weight: normal;
+			color: var(--text-light);
+		}
+
+		/* Alertes */
+		.alert {
+			padding: 1rem;
+			margin-bottom: 1.5rem;
+			border-radius: var(--border-radius);
+			animation: fadeIn 0.5s ease;
+		}
+
+		.alert-success {
+			background-color: #e8f5e9;
+			color: #2e7d32;
+			border-left: 4px solid #2e7d32;
+		}
+
+		.alert-danger {
+			background-color: #ffebee;
+			color: #c62828;
+			border-left: 4px solid #c62828;
+		}
+
+		@keyframes fadeIn {
+			from { opacity: 0; transform: translateY(-10px); }
+			to { opacity: 1; transform: translateY(0); }
+		}
+
+		/* Formulaire d'ajout de commentaire */
+		.add-comment-form {
+			background-color: var(--light-cream);
+			padding: 1.5rem;
+			border-radius: var(--border-radius);
+			margin-bottom: 2rem;
+		}
+
+		.add-comment-form label {
+			font-weight: 600;
+			color: var(--primary);
+			margin-bottom: 0.5rem;
+			display: block;
+		}
+
+		.add-comment-form textarea {
+			border: 1px solid rgba(131, 0, 0, 0.1);
+			border-radius: var(--border-radius);
+			padding: 1rem;
+			width: 100%;
+			font-family: 'Poppins', sans-serif;
+			transition: var(--transition);
+			resize: vertical;
+		}
+
+		.add-comment-form textarea:focus {
+			border-color: var(--primary);
+			box-shadow: 0 0 0 2px rgba(131, 0, 0, 0.1);
+			outline: none;
+		}
+
+		.btn-post-comment {
+			background-color: var(--primary);
+			color: var(--white);
+			border: none;
+			border-radius: var(--border-radius);
+			padding: 0.8rem 1.5rem;
+			font-weight: 600;
+			margin-top: 1rem;
+			cursor: pointer;
+			transition: var(--transition);
+		}
+
+		.btn-post-comment:hover {
+			background-color: var(--primary-light);
+			transform: translateY(-2px);
+		}
+
+		.btn-post-comment i {
+			margin-right: 0.5rem;
+		}
+
+		/* Message pour les utilisateurs non connectés */
+		.login-prompt {
+			background-color: var(--light-cream);
+			padding: 2rem;
+			border-radius: var(--border-radius);
+			margin-bottom: 2rem;
+			text-align: center;
+		}
+
+		.login-message {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.login-message i {
+			font-size: 2.5rem;
+			color: var(--primary);
+			margin-bottom: 1rem;
+		}
+
+		.login-message p {
+			color: var(--text-dark);
+			margin-bottom: 1.5rem;
+		}
+
+		.btn-login {
+			display: inline-block;
+			padding: 0.8rem 1.5rem;
+			background-color: var(--primary);
+			color: var(--white);
+			border-radius: var(--border-radius);
+			text-decoration: none;
+			font-weight: 600;
+			transition: var(--transition);
+		}
+
+		.btn-login:hover {
+			background-color: var(--primary-light);
+			transform: translateY(-2px);
+			color: var(--white);
+		}
+
+		/* Liste des commentaires */
+		.comments-list {
+			margin-top: 2rem;
+		}
+
+		.no-comments {
+			text-align: center;
+			padding: 3rem 1rem;
+			color: var(--text-light);
+		}
+
+		.no-comments i {
+			font-size: 3rem;
+			color: var(--neutral-gray);
+			margin-bottom: 1rem;
+			display: block;
+		}
+
+		.comment-item {
+			position: relative;
+			padding: 1.5rem;
+			border-radius: var(--border-radius);
+			margin-bottom: 1.5rem;
+			background-color: #fcfcfc;
+			border-left: 3px solid var(--primary);
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+			transition: var(--transition);
+		}
+
+		.comment-item:hover {
+			box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+		}
+
+		.comment-item.odd {
+			background-color: var(--light-cream);
+			border-left: 3px solid var(--secondary);
+		}
+
+		.comment-header {
+			margin-bottom: 1rem;
+		}
+
+		.comment-user {
+			display: flex;
+			align-items: center;
+		}
+
+		.comment-user img {
+			width: 50px;
+			height: 50px;
+			border-radius: 50%;
+			object-fit: cover;
+			margin-right: 1rem;
+			border: 2px solid var(--light-cream);
+		}
+
+		.user-details {
+			flex: 1;
+		}
+
+		.user-name {
+			font-size: 1.1rem;
+			font-weight: 600;
+			color: var(--primary);
+			margin: 0;
+		}
+
+		.comment-date {
+			font-size: 0.85rem;
+			color: var(--text-light);
+			display: flex;
+			align-items: center;
+			gap: 0.4rem;
+		}
+
+		.time {
+			color: var(--text-light);
+		}
+
+		.edited-label {
+			font-style: italic;
+			font-size: 0.8rem;
+		}
+
+		.comment-body {
+			font-size: 1rem;
+			line-height: 1.6;
+			color: var(--text-dark);
+			margin-bottom: 1rem;
+		}
+
+		/* Formulaire d'édition */
+		.edit-comment-form {
+			margin-bottom: 1rem;
+		}
+
+		.edit-comment-form textarea {
+			border: 1px solid rgba(131, 0, 0, 0.1);
+			border-radius: var(--border-radius);
+			padding: 1rem;
+			width: 100%;
+			font-family: 'Poppins', sans-serif;
+			transition: var(--transition);
+			resize: vertical;
+		}
+
+		.edit-comment-form textarea:focus {
+			border-color: var(--primary);
+			box-shadow: 0 0 0 2px rgba(131, 0, 0, 0.1);
+			outline: none;
+		}
+
+		.edit-actions {
+			display: flex;
+			gap: 0.5rem;
+			margin-top: 1rem;
+		}
+
+		.btn-save, .btn-cancel {
+			padding: 0.5rem 1rem;
+			border-radius: var(--border-radius);
+			font-weight: 600;
+			border: none;
+			cursor: pointer;
+			transition: var(--transition);
+		}
+
+		.btn-save {
+			background-color: var(--primary);
+			color: var(--white);
+		}
+
+		.btn-save:hover {
+			background-color: var(--primary-light);
+		}
+
+		.btn-cancel {
+			background-color: var(--neutral-gray);
+			color: var(--text-dark);
+		}
+
+		.btn-cancel:hover {
+			background-color: #c4c4c4;
+		}
+
+		/* Actions sur le commentaire */
+		.comment-actions {
+			display: flex;
+			justify-content: flex-end;
+			gap: 0.5rem;
+		}
+
+		.btn-edit, .btn-delete, .btn-delete-admin {
+			border: none;
+			background: none;
+			font-size: 0.9rem;
+			font-weight: 600;
+			cursor: pointer;
+			padding: 0.4rem 0.8rem;
+			border-radius: var(--border-radius);
+			transition: var(--transition);
+			display: inline-flex;
+			align-items: center;
+		}
+
+		.btn-edit {
+			color: var(--primary);
+		}
+
+		.btn-edit:hover {
+			background-color: rgba(131, 0, 0, 0.1);
+		}
+
+		.btn-delete {
+			color: var(--danger);
+		}
+
+		.btn-delete:hover {
+			background-color: rgba(220, 53, 69, 0.1);
+		}
+
+		.btn-delete-admin {
+			color: var(--danger);
+			border: 1px dashed var(--danger);
+		}
+
+		.btn-delete-admin:hover {
+			background-color: rgba(220, 53, 69, 0.1);
+		}
+
+		.btn-edit i, .btn-delete i, .btn-delete-admin i {
+			margin-right: 0.4rem;
+		}
+
+		/* Responsive */
+		@media (max-width: 992px) {
+			.product-main-container {
+				flex-direction: column;
+			}
+
+			.product-gallery, .product-info {
+				width: 100%;
+			}
+
+			.product-gallery {
+				padding: 1.5rem;
+			}
+
+			.product-info {
+				padding: 1.5rem;
+			}
+
+			.product-title {
+				font-size: 1.8rem;
+			}
+
+			.current-price {
+				font-size: 2rem;
+			}
+		}
+
+		@media (max-width: 768px) {
+			.product-view-container {
+				margin: 2rem auto;
+				padding: 0 1rem;
+			}
+
+			.comments-container {
+				padding: 1.5rem;
+			}
+
+			.comment-user img {
+				width: 40px;
+				height: 40px;
+			}
+
+			.comment-actions {
+				flex-direction: column;
+				align-items: flex-end;
+			}
+		}
+
+		@media (max-width: 576px) {
+			.product-title {
+				font-size: 1.5rem;
+			}
+
+			.current-price {
+				font-size: 1.7rem;
+			}
+
+			.add-to-cart-button, .out-of-stock-button {
+				width: 100%;
+				text-align: center;
+			}
+
+			.comment-item {
+				padding: 1rem;
+			}
+
+			.comment-user {
+				flex-direction: column;
+				align-items: flex-start;
+			}
+
+			.comment-user img {
+				margin-right: 0;
+				margin-bottom: 0.5rem;
+			}
+
+			.user-name {
+				font-size: 1rem;
+			}
+		}
+	</style>
+
+	<!-- JavaScript pour l'édition des commentaires -->
+	<script th:inline="javascript">
+		function editComment(commentId) {
+			// Cacher le contenu du commentaire
+			document.getElementById('comment-content-' + commentId).style.display = 'none';
+			// Afficher le formulaire d'édition
+			document.getElementById('edit-form-' + commentId).style.display = 'block';
+		}
+
+		function cancelEdit(commentId) {
+			// Afficher le contenu du commentaire
+			document.getElementById('comment-content-' + commentId).style.display = 'block';
+			// Cacher le formulaire d'édition
+			document.getElementById('edit-form-' + commentId).style.display = 'none';
+		}
+	</script>
+</section>
+</body>
+</html>

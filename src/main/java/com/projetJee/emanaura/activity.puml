@@ -1,0 +1,93 @@
+@startuml EmanauraActivityDiagram
+
+title Processus de commande - EmanAura
+
+|Client|
+start
+:Consulter les produits;
+:Sélectionner un produit;
+:Voir les détails du produit;
+:Ajouter au panier;
+
+|Système|
+:Vérifier stock disponible;
+if (Produit en stock?) then (oui)
+  :Ajouter produit au panier;
+  :Calculer le prix total;
+else (non)
+  :Afficher message "Rupture de stock";
+  stop
+endif
+
+|Client|
+:Consulter le panier;
+repeat
+  :Ajuster les quantités si nécessaire;
+  |Système|
+  :Mettre à jour le panier;
+  :Recalculer le prix total;
+  |Client|
+repeat while (Continuer les achats?) is (oui) not (non)
+
+:Procéder au paiement;
+:Saisir adresse de livraison;
+:Sélectionner mode de paiement;
+:Confirmer la commande;
+
+|Système|
+:Valider les informations;
+if (Informations valides?) then (oui)
+  :Créer la commande;
+  :Générer ID de commande;
+  :Enregistrer les détails de livraison;
+
+  fork
+    :Envoyer email de confirmation;
+  fork again
+    :Mettre à jour stock produits;
+  end fork
+
+  :Afficher page de confirmation;
+else (non)
+  :Afficher erreurs de validation;
+  |Client|
+  :Corriger les informations;
+  |Système|
+endif
+
+|Client|
+:Voir confirmation de commande;
+:Consulter statut de la commande;
+
+|Administrateur|
+:Recevoir notification de nouvelle commande;
+:Vérifier les détails de la commande;
+:Traiter la commande;
+:Mettre à jour statut (En traitement);
+
+fork
+  :Préparer la commande;
+  :Expédier la commande;
+  :Mettre à jour statut (Expédiée);
+fork again
+  :Générer facture;
+  :Envoyer facture au client;
+end fork
+
+|Système|
+:Envoyer notification de changement de statut;
+
+|Client|
+:Recevoir produit;
+:Confirmer réception;
+
+|Administrateur|
+:Mettre à jour statut (Livrée);
+
+|Système|
+:Finaliser la commande;
+:Archiver les données de commande;
+
+stop
+
+@enduml

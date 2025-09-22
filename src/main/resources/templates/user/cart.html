@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	  th:replace="~{base::layout(~{::section})}">
+<head>
+	<meta charset="UTF-8">
+	<title>Emanaura - Shopping Cart</title>
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<section>
+	<div class="container animated cart-container">
+		<div class="cart-header">
+			<h1 class="cart-title">Your Shopping Cart</h1>
+
+			<th:block th:if="${session.succMsg}">
+				<div class="alert alert-success text-center" role="alert">
+					<i class="fas fa-check-circle me-2"></i> [[${session.succMsg}]]
+					<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+				</div>
+			</th:block>
+
+			<th:block th:if="${session.errorMsg}">
+				<div class="alert alert-danger text-center" role="alert">
+					<i class="fas fa-exclamation-circle me-2"></i> [[${session.errorMsg}]]
+					<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+				</div>
+			</th:block>
+		</div>
+
+		<div class="cart-content">
+			<div class="cart-items-table">
+				<table class="cart-table">
+					<thead>
+					<tr>
+						<th>No</th>
+						<th>Image</th>
+						<th>Product</th>
+						<th>Price</th>
+						<th>Quantity</th>
+						<th>Total</th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr th:each="cart,c:${carts}">
+						<td class="item-number">[[${c.count}]]</td>
+						<td class="item-image">
+							<div class="product-image-wrapper">
+								<img th:src="@{'/img/product_img/'+${cart.product.image}}" alt="Product Image">
+							</div>
+						</td>
+						<td class="item-name">[[${cart.product.title}]]</td>
+						<td class="item-price">[[${cart.product.discountPrice}]] MAD</td>
+						<td class="item-quantity">
+							<div class="quantity-controls">
+								<a th:href="@{'/user/cartQuantityUpdate?sy=de&cid='+${cart.id}}" class="quantity-btn decrease">
+									<i class="fa-solid fa-minus"></i>
+								</a>
+								<span class="quantity-value">[[${cart.quantity}]]</span>
+								<a th:href="@{'/user/cartQuantityUpdate?sy=in&cid='+${cart.id}}" class="quantity-btn increase">
+									<i class="fa-solid fa-plus"></i>
+								</a>
+							</div>
+						</td>
+						<td class="item-total">[[${cart.totalPrice}]] MAD</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<div class="cart-summary">
+				<div class="summary-row">
+					<span class="summary-label">Total Items:</span>
+					<span class="summary-value" th:text="${carts.size()}">0</span>
+				</div>
+				<div class="summary-row total">
+					<span class="summary-label">Total Amount:</span>
+					<span class="summary-value">[[${totalOrderPrice}]] MAD</span>
+				</div>
+				<div class="checkout-action">
+					<a href="/user/orders" class="checkout-btn">
+						<i class="fas fa-credit-card me-2"></i> Proceed to Payment
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<style>
+		/* Cart Page Specific Styles */
+		.cart-container {
+			margin: 80px auto;
+			max-width: 1140px;
+		}
+
+		.cart-header {
+			margin-bottom: 2rem;
+		}
+
+		.cart-title {
+			font-size: 1.8rem;
+			font-weight: 700;
+			color: var(--emanaura-primary);
+			margin-bottom: 1rem;
+			position: relative;
+			display: inline-block;
+			padding-bottom: 0.5rem;
+		}
+
+		.cart-title::after {
+			content: '';
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 60px;
+			height: 3px;
+			background: linear-gradient(to right, var(--emanaura-primary), var(--emanaura-secondary));
+		}
+
+		.alert {
+			border-radius: var(--radius);
+			padding: 1rem;
+			margin-bottom: 1.5rem;
+			border: none;
+		}
+
+		.alert-success {
+			background-color: #e8f5e9;
+			color: #2e7d32;
+		}
+
+		.alert-danger {
+			background-color: #ffebee;
+			color: #c62828;
+		}
+
+		.cart-content {
+			background-color: white;
+			border-radius: var(--radius);
+			box-shadow: var(--shadow-md);
+			overflow: hidden;
+		}
+
+		.cart-items-table {
+			overflow-x: auto;
+		}
+
+		.cart-table {
+			width: 100%;
+			border-collapse: separate;
+			border-spacing: 0;
+		}
+
+		.cart-table thead {
+			background-color: var(--emanaura-cream);
+		}
+
+		.cart-table th {
+			color: var(--emanaura-dark);
+			font-weight: 600;
+			text-align: left;
+			padding: 1.2rem 1rem;
+			font-size: 0.9rem;
+			text-transform: uppercase;
+			letter-spacing: 0.5px;
+		}
+
+		.cart-table td {
+			padding: 1.2rem 1rem;
+			vertical-align: middle;
+			border-bottom: 1px solid var(--emanaura-cream);
+		}
+
+		.cart-table tr:last-child td {
+			border-bottom: none;
+		}
+
+		.item-number {
+			font-weight: 600;
+			color: var(--emanaura-dark);
+			width: 50px;
+		}
+
+		.item-image {
+			width: 100px;
+		}
+
+		.product-image-wrapper {
+			width: 80px;
+			height: 80px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background-color: var(--emanaura-cream);
+			border-radius: var(--radius);
+			overflow: hidden;
+		}
+
+		.product-image-wrapper img {
+			max-width: 100%;
+			max-height: 100%;
+			object-fit: contain;
+		}
+
+		.item-name {
+			font-weight: 500;
+			color: var(--emanaura-dark);
+		}
+
+		.item-price {
+			font-weight: 500;
+			color: var(--emanaura-primary);
+		}
+
+		.item-quantity {
+			width: 150px;
+		}
+
+		.quantity-controls {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.quantity-btn {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: 30px;
+			height: 30px;
+			border-radius: 50%;
+			background-color: var(--emanaura-cream);
+			color: var(--emanaura-dark);
+			text-decoration: none;
+			transition: all 0.3s ease;
+		}
+
+		.quantity-btn:hover {
+			background-color: var(--emanaura-primary);
+			color: white;
+			transform: scale(1.1);
+		}
+
+		.quantity-value {
+			font-weight: 600;
+			margin: 0 10px;
+			min-width: 30px;
+			text-align: center;
+		}
+
+		.item-total {
+			font-weight: 600;
+			color: var(--emanaura-primary);
+		}
+
+		.cart-summary {
+			padding: 2rem;
+			background-color: var(--emanaura-cream);
+			border-top: 1px solid rgba(0, 0, 0, 0.05);
+		}
+
+		.summary-row {
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+			margin-bottom: 1rem;
+		}
+
+		.summary-row.total {
+			margin-top: 1rem;
+			padding-top: 1rem;
+			border-top: 2px dashed rgba(131, 0, 0, 0.1);
+			margin-bottom: 1.5rem;
+		}
+
+		.summary-label {
+			font-weight: 600;
+			color: var(--emanaura-dark);
+			margin-right: 1rem;
+		}
+
+		.summary-row.total .summary-label,
+		.summary-row.total .summary-value {
+			font-size: 1.3rem;
+			color: var(--emanaura-primary);
+		}
+
+		.checkout-action {
+			display: flex;
+			justify-content: flex-end;
+		}
+
+		.checkout-btn {
+			display: inline-block;
+			padding: 1rem 2rem;
+			background-color: var(--emanaura-primary);
+			color: white;
+			font-weight: 600;
+			border-radius: var(--radius);
+			text-decoration: none;
+			transition: all 0.3s ease;
+		}
+
+		.checkout-btn:hover {
+			background-color: var(--emanaura-dark);
+			transform: translateY(-3px);
+			box-shadow: 0 5px 15px rgba(131, 0, 0, 0.2);
+			color: white;
+		}
+
+		/* Empty Cart Message */
+		.empty-cart-message {
+			text-align: center;
+			padding: 3rem;
+		}
+
+		.empty-cart-icon {
+			font-size: 3rem;
+			color: var(--emanaura-gray);
+			margin-bottom: 1rem;
+		}
+
+		.empty-cart-text {
+			font-size: 1.2rem;
+			color: var(--emanaura-dark);
+			margin-bottom: 1.5rem;
+		}
+
+		/* Responsive adjustments */
+		@media (max-width: 992px) {
+			.cart-container {
+				margin: 60px 15px;
+			}
+		}
+
+		@media (max-width: 768px) {
+			.cart-table {
+				font-size: 0.9rem;
+			}
+
+			.cart-table th {
+				padding: 1rem 0.5rem;
+			}
+
+			.cart-table td {
+				padding: 1rem 0.5rem;
+			}
+
+			.product-image-wrapper {
+				width: 60px;
+				height: 60px;
+			}
+
+			.summary-row.total .summary-label,
+			.summary-row.total .summary-value {
+				font-size: 1.1rem;
+			}
+
+			.checkout-btn {
+				width: 100%;
+				text-align: center;
+			}
+		}
+
+		@media (max-width: 576px) {
+			.item-number, .item-image {
+				display: none;
+			}
+
+			.quantity-btn {
+				width: 25px;
+				height: 25px;
+			}
+
+			.quantity-value {
+				margin: 0 5px;
+			}
+		}
+	</style>
+</section>
+</body>
+</html>

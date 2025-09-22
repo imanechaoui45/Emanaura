@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!--	th:replace="~{base::layout(~{::section})}">-->
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Register</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+	<style>
+		body {
+			background-color: #FFF4ED; /* Soft Peach background */
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		}
+		.card {
+			border-radius: 12px;
+			border: none;
+			box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+			background-color: #FFFFFF;
+		}
+		.card-header {
+			background-color: white;
+			border-bottom: none;
+			padding-top: 25px;
+		}
+		.card-header p.fs-4 {
+			color: #830000; /* Dark Red */
+			font-weight: bold;
+			margin-bottom: 5px;
+			font-size: 32px !important;
+		}
+		.form-label {
+			font-weight: 500;
+			color: #666;
+			margin-bottom: 5px;
+		}
+		.form-control {
+			border-radius: 8px;
+			padding: 10px 15px;
+			border: 1px solid #D6D6D6; /* Light Gray */
+			background-color: #FFF4ED; /* Soft Peach input background */
+		}
+		.form-control:focus {
+			border-color: #C10000; /* Bright Red */
+			box-shadow: 0 0 0 0.2rem rgba(193, 0, 0, 0.25);
+		}
+		.btn-register {
+			background-color: #C10000; /* Bright Red */
+			color: white;
+			border: none;
+			border-radius: 8px;
+			padding: 12px;
+			font-weight: 600;
+			transition: background-color 0.3s;
+		}
+		.btn-register:hover {
+			background-color: #830000; /* Dark Red */
+		}
+		.card-footer {
+			background-color: #EDE9D0; /* Light Cream */
+			border-top: none;
+			border-bottom-left-radius: 12px !important;
+			border-bottom-right-radius: 12px !important;
+			padding: 15px;
+		}
+		.card-footer a {
+			color: #C10000; /* Bright Red */
+			text-decoration: none;
+			font-weight: 600;
+		}
+		.card-footer a:hover {
+			color: #830000; /* Dark Red */
+		}
+		.left-image-container {
+			background-color: #BEAGA0; /* Muted Beige */
+			height: 100%;
+			border-radius: 12px;
+			overflow: hidden;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.success-message {
+			color: #008030;
+			font-weight: bold;
+		}
+		.error-message {
+			color: #C10000; /* Bright Red */
+			font-weight: bold;
+		}
+		.helper-text {
+			color: #666;
+			font-size: 14px;
+			margin-top: 15px;
+		}
+	</style>
+</head>
+<body>
+<section>
+	<div class="container mt-5 p-4">
+		<div class="row">
+			<div class="col-md-5 p-3">
+				<div class="left-image-container">
+					<!-- You can add an image here similar to your login page -->
+					<img alt="Registration" src="/img/logos/flower1.jpeg" width="100%" height="100%" style="object-fit: cover;">
+				</div>
+			</div>
+			<div class="col-md-7 p-3">
+				<div class="card shadow">
+					<div class="card-header text-center">
+						<p class="fs-4 text-center">Register</p>
+						<p class="helper-text">Create your account to get started</p>
+						<th:block th:if="${session.succMsg}">
+							<p class="success-message">[[${session.succMsg}]]</p>
+							<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+						</th:block>
+
+						<th:block th:if="${session.errorMsg}">
+							<p class="error-message">[[${session.errorMsg}]]</p>
+							<th:block th:text="${@commonServiceImpl.removeSessionMessage()}"></th:block>
+						</th:block>
+					</div>
+					<div class="card-body p-4">
+						<form action="/saveUser" enctype="multipart/form-data" id="userRegister" novalidate
+							  method="post">
+							<div class="row mb-3">
+								<div class="col-md-6">
+									<label class="form-label">Full Name</label>
+									<input required class="form-control" name="name" type="text" placeholder="John Doe">
+								</div>
+
+								<div class="col-md-6">
+									<label class="form-label">Mobile Number</label>
+									<input required class="form-control" name="mobileNumber" type="number" placeholder="1234567890">
+								</div>
+							</div>
+
+							<div class="mb-3">
+								<label class="form-label">Email</label>
+								<input required class="form-control" name="email" type="email" placeholder="you@example.com">
+							</div>
+
+							<div class="row mb-3">
+								<div class="col-md-6">
+									<label class="form-label">Address</label>
+									<input required class="form-control" name="address" type="text" placeholder="123 Main St">
+								</div>
+
+								<div class="col-md-6">
+									<label class="form-label">City</label>
+									<input required class="form-control" name="city" type="text" placeholder="New York">
+								</div>
+							</div>
+
+							<div class="row mb-3">
+								<div class="col-md-6">
+									<label class="form-label">State</label>
+									<input required class="form-control" name="state" type="text" placeholder="NY">
+								</div>
+
+								<div class="col-md-6">
+									<label class="form-label">Pincode</label>
+									<input required class="form-control" name="pincode" type="number" placeholder="10001">
+								</div>
+							</div>
+
+							<div class="row mb-3">
+								<div class="col-md-6">
+									<label class="form-label">Password</label>
+									<input required class="form-control" name="password" type="password" id="pass" placeholder="******">
+								</div>
+
+								<div class="col-md-6">
+									<label class="form-label">Confirm Password</label>
+									<input required class="form-control" name="confirmpassword" type="password" placeholder="******">
+								</div>
+							</div>
+
+							<div class="mb-4">
+								<label class="form-label">Profile Image</label>
+								<input class="form-control" name="img" type="file">
+							</div>
+
+							<button type="submit" class="btn btn-register col-md-12">Create Account</button>
+						</form>
+					</div>
+
+					<div class="card-footer text-center">
+						Already have an account? <a href="/signin">Sign In</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

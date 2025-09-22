@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Emanaura | Authentication</title>
+	<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			--primary-dark: #830000;
+			--primary: #C10000;
+			--light-gray: #D6D6D6;
+			--warm-beige: #BEA6A0;
+			--off-white: #FFF4ED;
+			--cream: #EDE9D0;
+		}
+
+		* {
+			box-sizing: border-box;
+			margin: 0;
+			padding: 0;
+		}
+
+		body {
+			font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+			background-color: var(--off-white);
+			color: #333;
+			line-height: 1.6;
+			display: flex;
+			min-height: 100vh;
+			overflow-x: hidden;
+			padding: 20px;
+		}
+
+		.auth-container {
+			display: flex;
+			width: 100%;
+			max-width: 1000px;
+			height: 550px;
+			margin: auto;
+			background: white;
+			border-radius: 16px;
+			overflow: hidden;
+			box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+		}
+
+		.auth-image {
+			flex: 1;
+			padding: 4px; /* Very small padding */
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			background-color: #f8f8f8; /* Light neutral background */
+		}
+
+		.auth-image img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			border-radius: 12px 0 0 12px;
+		}
+
+		.auth-form {
+			flex: 1;
+			padding: 3rem;
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+		}
+
+		.form-header {
+			margin-bottom: 2rem;
+		}
+
+		.form-title {
+			font-size: 1.75rem;
+			font-weight: 700;
+			color: var(--primary-dark);
+			margin-bottom: 0.5rem;
+		}
+
+		.form-subtitle {
+			color: #666;
+			font-weight: 400;
+			font-size: 0.9375rem;
+		}
+
+		.form-group {
+			margin-bottom: 1.25rem;
+		}
+
+		.form-label {
+			display: block;
+			font-size: 0.875rem;
+			font-weight: 500;
+			color: #555;
+			margin-bottom: 0.5rem;
+		}
+
+		.form-control {
+			width: 100%;
+			padding: 0.75rem 1rem;
+			border: 1px solid #e0e0e0;
+			border-radius: 8px;
+			font-size: 0.9375rem;
+			background-color: #f9f9f9;
+		}
+
+		.form-control:focus {
+			border-color: var(--warm-beige);
+			box-shadow: 0 0 0 3px rgba(190, 166, 160, 0.2);
+			background-color: white;
+			outline: none;
+		}
+
+		.password-toggle {
+			position: absolute;
+			right: 12px;
+			top: 38px;
+			cursor: pointer;
+			color: #999;
+			font-size: 0.875rem;
+		}
+
+		.btn {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			padding: 0.75rem 1.5rem;
+			border-radius: 8px;
+			font-size: 0.9375rem;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.2s ease;
+			border: none;
+		}
+
+		.btn-primary {
+			background: linear-gradient(to right, var(--primary), var(--primary-dark));
+			color: white;
+			width: 100%;
+		}
+
+		.btn-primary:hover {
+			transform: translateY(-1px);
+			box-shadow: 0 4px 8px rgba(193, 0, 0, 0.15);
+		}
+
+		.form-footer {
+			margin-top: 1.5rem;
+			text-align: center;
+			font-size: 0.875rem;
+		}
+
+		.form-footer a {
+			color: var(--primary);
+			font-weight: 500;
+			text-decoration: none;
+		}
+
+		.form-footer a:hover {
+			text-decoration: underline;
+		}
+
+		.divider {
+			display: flex;
+			align-items: center;
+			margin: 1.5rem 0;
+			color: #999;
+			font-size: 0.75rem;
+		}
+
+		.divider::before, .divider::after {
+			content: '';
+			flex: 1;
+			border-bottom: 1px solid #e0e0e0;
+		}
+
+		.divider::before {
+			margin-right: 1rem;
+		}
+
+		.divider::after {
+			margin-left: 1rem;
+		}
+
+		.remember-forgot {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 1.5rem;
+		}
+
+		.remember-me {
+			display: flex;
+			align-items: center;
+		}
+
+		.remember-me input {
+			margin-right: 0.5rem;
+		}
+
+		.forgot-password {
+			font-size: 0.875rem;
+			color: var(--primary);
+		}
+
+		@media (max-width: 768px) {
+			.auth-container {
+				flex-direction: column;
+				height: auto;
+				max-width: 500px;
+			}
+
+			.auth-image {
+				height: 200px;
+				padding: 0;
+			}
+
+			.auth-image img {
+				border-radius: 12px 12px 0 0;
+			}
+
+			.auth-form {
+				padding: 2rem;
+			}
+		}
+
+		@media (max-width: 480px) {
+			body {
+				padding: 0;
+			}
+
+			.auth-container {
+				border-radius: 0;
+				min-height: 100vh;
+			}
+
+			.auth-form {
+				padding: 1.5rem;
+			}
+		}
+	</style>
+</head>
+<body>
+<div class="auth-container">
+	<div class="auth-image">
+		<img th:src="@{/img/logos/flower1.jpeg}" alt="Flower">
+	</div>
+
+	<div class="auth-form">
+		<div class="form-header">
+			<h2 class="form-title">Sign In</h2>
+			<p class="form-subtitle">Enter your credentials to access your account</p>
+		</div>
+		<div th:if="${param.error}"
+			 class="alert alert-danger text-center">
+
+			<th:block
+					th:if="${session.SPRING_SECURITY_LAST_EXCEPTION!=null}">
+				[[${session.SPRING_SECURITY_LAST_EXCEPTION.message}]]
+			</th:block>
+
+
+
+		</div>
+		<div th:if="${param.logout}" class="alert alert-success">
+			Logout Sucessfully</div>
+		<form action="/login" method="post">
+			<div class="form-group">
+				<label for="username" class="form-label">Email Address</label>
+				<input type="email" class="form-control" id="username" name="username" required placeholder="you@example.com">
+			</div>
+
+			<div class="form-group" style="position: relative;">
+				<label for="password" class="form-label">Password</label>
+				<input type="password" class="form-control" id="password" name="password" required placeholder="••••••••">
+				<span class="password-toggle" onclick="togglePassword()">Show</span>
+			</div>
+
+			<div class="remember-forgot">
+				<div class="remember-me">
+					<input type="checkbox" id="remember">
+					<label for="remember">Remember me</label>
+				</div>
+				<a href="#" class="forgot-password">Forgot password?</a>
+			</div>
+
+			<button type="submit" class="btn btn-primary">Login</button>
+
+			<div class="divider">OR</div>
+
+			<div class="form-footer">
+				Don't have an account? <a th:href="@{/register}">Sign up</a>
+			</div>
+		</form>
+	</div>
+
+</div>
+
+<script>
+	function togglePassword() {
+		const passwordField = document.getElementById('password');
+		const toggleBtn = document.querySelector('.password-toggle');
+
+		if (passwordField.type === 'password') {
+			passwordField.type = 'text';
+			toggleBtn.textContent = 'Hide';
+		} else {
+			passwordField.type = 'password';
+			toggleBtn.textContent = 'Show';
+		}
+	}
+</script>
+</body>
+</html>

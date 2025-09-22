@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	  th:fragment="layout(content)">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Emanaura - Dressing your Aura</title>
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+	<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+			crossorigin="anonymous">
+
+	<link rel="stylesheet"
+		  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+		  integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+		  crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+	<link rel="stylesheet" href="/css/emanaura-style.css">
+</head>
+<body>
+<!-- Start Navbar  -->
+<nav class="navbar navbar-expand-lg bg-primary fixed-top navbar-dark">
+	<div class="container">
+		<a class="navbar-brand" href="/">
+			<img src="/img/logos/logo1.png" alt="Emanaura" height="40" class="d-inline-block align-text-top me-2">
+			Emanaura
+		</a>
+		<button class="navbar-toggler" type="button"
+				data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+				aria-controls="navbarSupportedContent" aria-expanded="false"
+				aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+				<th:block th:if="${user==null}">
+					<li class="nav-item"><a class="nav-link active"
+											aria-current="page" href="/"><i class="fa-solid fa-house"></i>
+						Home</a></li>
+				</th:block>
+
+				<th:block th:unless="${user==null}">
+					<li class="nav-item" th:if="${user.role=='ROLE_ADMIN'}"><a
+							class="nav-link active" aria-current="page" href="/admin/"><i
+							class="fa-solid fa-house"></i> Home</a></li>
+
+					<li class="nav-item" th:if="${user.role=='ROLE_USER'}"><a
+							class="nav-link active" aria-current="page" href="/"><i
+							class="fa-solid fa-house"></i> Home</a></li>
+				</th:block>
+
+				<li class="nav-item"><a class="nav-link active"
+										aria-current="page" href="/products"><i class="fa-solid fa-store"></i> Products</a></li>
+
+				<li class="nav-item dropdown"><a
+						class="nav-link dropdown-toggle active" href="#" role="button"
+						data-bs-toggle="dropdown" aria-expanded="false">
+					<i class="fa-solid fa-tags"></i> Categories </a>
+					<ul class="dropdown-menu">
+						<li th:each="c:${categorys}"><a class="dropdown-item"
+														th:href="@{'/products?category='+${c.name}}">[[${c.name}]]</a></li>
+					</ul></li>
+			</ul>
+
+			<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+				<th:block th:if="${user==null}">
+					<li class="nav-item"><a class="nav-link active"
+											aria-current="page" href="/signin"><i
+							class="fa-solid fa-right-to-bracket"></i> LOGIN</a></li>
+					<li class="nav-item"><a class="nav-link active"
+											aria-current="page" href="/register"><i class="fa-solid fa-user-plus"></i> REGISTER</a></li>
+				</th:block>
+
+				<th:block th:if="${user!=null}">
+					<th:block th:if="${user.role=='ROLE_USER'}">
+						<li class="nav-item"><a class="nav-link active"
+												aria-current="page" href="/user/cart"><i
+								class="fa-solid fa-cart-shopping"></i> Cart <span class="badge bg-light text-primary">[[${countCart}]]</span></a>
+						</li>
+					</th:block>
+					<li class="nav-item dropdown"><a
+							class="nav-link dropdown-toggle active" href="#" role="button"
+							data-bs-toggle="dropdown" aria-expanded="false"> <i
+							class="fa-solid fa-user"></i> [[${user.name}]]
+					</a>
+						<ul class="dropdown-menu dropdown-menu-end">
+							<li th:if="${user.role=='ROLE_USER'}"><a
+									class="dropdown-item" href="/user/profile"><i class="fa-solid fa-id-card me-2"></i>Profile</a></li>
+
+							<li th:if="${user.role=='ROLE_ADMIN'}"><a
+									class="dropdown-item" href="/admin/profile"><i class="fa-solid fa-id-card me-2"></i>Profile</a></li>
+
+							<li th:if="${user.role=='ROLE_USER'}"><a
+									class="dropdown-item" href="/user/user-orders"><i class="fa-solid fa-bag-shopping me-2"></i>My Orders</a></li>
+							<li><hr class="dropdown-divider"></li>
+							<li><a class="dropdown-item" href="/logout"><i class="fa-solid fa-right-from-bracket me-2"></i>Logout</a></li>
+						</ul>
+					</li>
+				</th:block>
+			</ul>
+		</div>
+	</div>
+</nav>
+<!-- End Navbar -->
+
+<div th:replace="${content}"></div>
+
+<!-- Start Footer -->
+<footer class="footer mt-5">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4 mb-4 mb-md-0">
+				<img src="img/logos/logo1.png" alt="Emanaura" class="footer-logo">
+				<p>Dressing your Aura with premium quality products that elevate your style and presence.</p>
+				<div class="social-icons mt-3">
+					<a href="#" class="me-3"><i class="fab fa-facebook-f"></i></a>
+					<a href="#" class="me-3"><i class="fab fa-instagram"></i></a>
+					<a href="#" class="me-3"><i class="fab fa-twitter"></i></a>
+					<a href="#"><i class="fab fa-pinterest"></i></a>
+				</div>
+			</div>
+			<div class="col-md-2 mb-4 mb-md-0">
+				<h5>Quick Links</h5>
+				<ul class="list-unstyled">
+					<li class="mb-2"><a href="/"><i class="fas fa-chevron-right me-1"></i> Home</a></li>
+					<li class="mb-2"><a href="/products"><i class="fas fa-chevron-right me-1"></i> Products</a></li>
+					<li class="mb-2"><a href="#"><i class="fas fa-chevron-right me-1"></i> About Us</a></li>
+					<li class="mb-2"><a href="#"><i class="fas fa-chevron-right me-1"></i> Contact</a></li>
+				</ul>
+			</div>
+			<div class="col-md-3 mb-4 mb-md-0">
+				<h5>Customer Service</h5>
+				<ul class="list-unstyled">
+					<li class="mb-2"><a href="#"><i class="fas fa-chevron-right me-1"></i> FAQ</a></li>
+					<li class="mb-2"><a href="#"><i class="fas fa-chevron-right me-1"></i> Shipping Policy</a></li>
+					<li class="mb-2"><a href="#"><i class="fas fa-chevron-right me-1"></i> Returns & Exchanges</a></li>
+					<li class="mb-2"><a href="#"><i class="fas fa-chevron-right me-1"></i> Terms of Service</a></li>
+				</ul>
+			</div>
+			<div class="col-md-3">
+				<h5>Contact Us</h5>
+				<ul class="list-unstyled">
+					<li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i> 123 Fashion Street, Design District</li>
+					<li class="mb-2"><i class="fas fa-phone me-2"></i> +1 (555) 123-4567</li>
+					<li class="mb-2"><i class="fas fa-envelope me-2"></i> contact@emanaura.com</li>
+				</ul>
+			</div>
+		</div>
+		<hr class="my-4" style="background-color: rgba(255,255,255,0.2)">
+		<div class="row align-items-center">
+			<div class="col-md-6 text-center text-md-start">
+				<p class="mb-0">&copy; 2025 Emanaura. All rights reserved.</p>
+			</div>
+			<div class="col-md-6 text-center text-md-end mt-3 mt-md-0">
+				<img src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/pp-acceptance-medium.png" alt="Payment Methods">
+			</div>
+		</div>
+	</div>
+</footer>
+<!-- End Footer  -->
+
+<!-- Jquery Validation Library  -->
+<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script
+		src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+<script type="text/javascript" src="../js/script.js"></script>
+<!-- End  -->
+<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+		crossorigin="anonymous"></script>
+</body>
+</html>

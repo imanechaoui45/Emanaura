@@ -1,0 +1,252 @@
+@startuml EmanauraClassDiagram
+
+' Entités / Models
+class UserDtls {
+  -Integer id
+  -String name
+  -String mobileNumber
+  -String email
+  -String address
+  -String city
+  -String state
+  -String pincode
+  -String password
+  -String profileImage
+  -String role
+  -Boolean isEnable
+  -Boolean accountNonLocked
+  -Integer failedAttempt
+  -Date lockTime
+  -String resetToken
+}
+
+class Category {
+  -Integer id
+  -String name
+  -String imageName
+  -Boolean isActive
+}
+
+class Product {
+  -Integer id
+  -String title
+  -String description
+  -String category
+  -Double price
+  -int stock
+  -String image
+  -int discount
+  -Double discountPrice
+  -Boolean isActive
+}
+
+class Cart {
+  -Integer id
+  -UserDtls user
+  -Product product
+  -Integer quantity
+  -Double totalPrice
+  -Double totalOrderPrice
+}
+
+class ProductOrder {
+  -Integer id
+  -String orderId
+  -LocalDate orderDate
+  -Product product
+  -Double price
+  -Integer quantity
+  -UserDtls user
+  -String status
+  -String paymentType
+  -OrderAddress orderAddress
+}
+
+class OrderAddress {
+  -Integer id
+  -String firstName
+  -String lastName
+  -String email
+  -String mobileNo
+  -String address
+  -String city
+  -String state
+  -String pincode
+}
+
+class OrderRequest {
+  -String firstName
+  -String lastName
+  -String email
+  -String mobileNo
+  -String address
+  -String city
+  -String state
+  -String pincode
+  -String paymentType
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+' Services
+interface UserService {
+  +UserDtls createUser(UserDtls user)
+  +boolean checkEmail(String email)
+  +UserDtls getUserById(int userId)
+  +UserDtls updateUser(UserDtls user)
+  +boolean checkPassword(int userId, String oldPassword)
+  +UserDtls updatePassword(int userId, String newPassword)
+}
+
+interface ProductService {
+  +Product saveProduct(Product product)
+  +List<Product> getAllProduct()
+  +Product getProductById(int id)
+  +Product updateProduct(Product product)
+  +void deleteProduct(int id)
+  +List<Product> getProductByCategory(String category)
+  +List<Product> findBySearch(String ch)
+}
+
+interface CartService {
+  +Cart addCart(Cart cart)
+  +List<Cart> getCartByUser(UserDtls user)
+  +Cart getCartById(int id)
+  +void deleteCart(int id)
+  +void updateQuantity(Cart c)
+}
+
+interface OrderService {
+  +ProductOrder saveOrder(OrderRequest request, Cart cart, UserDtls user)
+  +List<ProductOrder> getAllOrder()
+  +List<ProductOrder> getOrderByUser(UserDtls user)
+  +ProductOrder getOrderById(int id)
+  +void updateOrderStatus(int id, String status)
+}
+
+interface CategoryService {
+  +Category saveCategory(Category category)
+  +Category getCategoryById(int id)
+  +List<Category> getAllCategory()
+  +void deleteCategory(int id)
+  +Category updateCategory(Category category)
+}
+
+' Controllers
+class AdminController {
+  +String home()
+  +String loadAddProduct()
+  +String category()
+  +String saveCategory(Category category)
+  +String deleteCategory(int id)
+  +String loadEditCategory(int id)
+  +String updateCategory(Category category)
+  +String saveProduct(Product product)
+  +String products()
+  +String deleteProduct(int id)
+  +String editProduct(int id)
+  +String updateProduct(Product product)
+  +String users()
+  +String updateStatus(int id, boolean status)
+  +String orders()
+  +String updateOrderStatus(int id, String status)
+  +String searchOrder(String query)
+  +String addAdmin()
+  +String saveAdmin(UserDtls user)
+  +String profile()
+  +String updateProfile(UserDtls user)
+  +String changePassword(String oldPassword, String newPassword)
+}
+
+class UserController {
+  +String home()
+  +String addToCart(int productId, int userId)
+  +String cart()
+  +String updateCartQuantity(int cartId, int quantity)
+  +String orders()
+  +String saveOrder(OrderRequest request)
+  +String orderSuccess()
+  +String userOrders()
+  +String updateOrderStatus(int id, String status)
+  +String profile()
+  +String updateProfile(UserDtls user)
+  +String changePassword(String oldPassword, String newPassword)
+}
+
+class HomeController {
+  +String home()
+  +String signin()
+  +String register()
+  +String products()
+  +String productDetails(int id)
+  +String saveUser(UserDtls user)
+  +String forgotPassword()
+  +String processForgotPassword(String email)
+  +String resetPassword(String token)
+  +String processResetPassword(String token, String password)
+  +String search(String query)
+}
+
+' Repositories
+interface UserRepository {
+  +UserDtls findByEmail(String email)
+  +UserDtls findById(int id)
+}
+
+interface ProductRepository {
+  +List<Product> findByCategory(String category)
+  +List<Product> findByTitleContaining(String keyword)
+}
+
+interface CartRepository {
+  +List<Cart> findByUser(UserDtls user)
+  +Cart findById(int id)
+}
+
+interface ProductOrderRepository {
+  +List<ProductOrder> findByUser(UserDtls user)
+  +ProductOrder findById(int id)
+}
+
+interface CategoryRepository {
+  +Category findById(int id)
+  +List<Category> findAll()
+}
+
+' Relations
+Cart "many" -- "1" UserDtls: belongs to
+Cart "many" -- "1" Product: contains
+
+ProductOrder "many" -- "1" UserDtls: ordered by
+ProductOrder "many" -- "1" Product: contains
+ProductOrder "1" -- "1" OrderAddress: shipping to
+
+AdminController --> ProductService: uses
+AdminController --> UserService: uses
+AdminController --> OrderService: uses
+AdminController --> CategoryService: uses
+
+UserController --> CartService: uses
+UserController --> UserService: uses
+UserController --> ProductService: uses
+UserController --> OrderService: uses
+
+HomeController --> UserService: uses
+HomeController --> ProductService: uses
+
+UserService ..> UserRepository: uses
+ProductService ..> ProductRepository: uses
+CartService ..> CartRepository: uses
+OrderService ..> ProductOrderRepository: uses
+CategoryService ..> CategoryRepository: uses
+
+
+
+
+@enduml

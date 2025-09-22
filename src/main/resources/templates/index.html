@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+	  th:replace="~{base::layout(~{::section})}">
+<head>
+	<meta charset="UTF-8">
+	<title>Emanaura - Dressing your Aura</title>
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<section>
+	<!-- Hero Slider -->
+	<div class="hero-slider">
+		<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+			<div class="carousel-indicators">
+				<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+				<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+				<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+			</div>
+			<div class="carousel-inner">
+				<div class="carousel-item active">
+					<div class="overlay"></div>
+					<img src="img/logos/pexels15.jpg" class="d-block w-100" alt="..." height="500px" object-fit="cover">
+					<div class="carousel-caption">
+						<h1 class="animate__animated animate__fadeInDown">Emanaura</h1>
+						<p class="animate__animated animate__fadeInUp">Dressing Your Aura</p>
+						<a href="/products" class="btn btn-hero animate__animated animate__fadeInUp">Shop Now</a>
+					</div>
+				</div>
+				<div class="carousel-item">
+					<div class="overlay"></div>
+					<img src="img/logos/pexels8.jpg" class="d-block w-100" alt="..." height="500px" object-fit="cover">
+					<div class="carousel-caption">
+						<h1 class="animate__animated animate__fadeInDown">Premium Quality</h1>
+						<p class="animate__animated animate__fadeInUp">Crafted with excellence for your satisfaction</p>
+						<a href="/products" class="btn btn-hero animate__animated animate__fadeInUp">Explore</a>
+					</div>
+				</div>
+				<div class="carousel-item">
+					<div class="overlay"></div>
+					<img src="img/logos/pexels16.jpg" class="d-block w-100" alt="..." height="500px" object-fit="cover">
+					<div class="carousel-caption">
+						<h1 class="animate__animated animate__fadeInDown">Elegance Defined</h1>
+						<p class="animate__animated animate__fadeInUp">Where style meets sophistication</p>
+						<a href="/products" class="btn btn-hero animate__animated animate__fadeInUp">View Collection</a>
+					</div>
+				</div>
+			</div>
+			<button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Previous</span>
+			</button>
+			<button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+				<span class="carousel-control-next-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Next</span>
+			</button>
+		</div>
+	</div>
+
+	<!-- Welcome Banner -->
+	<div class="welcome-banner">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4">
+					<div class="feature-box">
+						<i class="fas fa-shipping-fast"></i>
+						<h3>Fast Delivery</h3>
+						<p>Free shipping on all orders over $50</p>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="feature-box">
+						<i class="fas fa-medal"></i>
+						<h3>Premium Quality</h3>
+						<p>Handcrafted with premium materials</p>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="feature-box">
+						<i class="fas fa-headset"></i>
+						<h3>24/7 Support</h3>
+						<p>Dedicated customer service team</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- Featured Products Banner -->
+	<div class="featured-banner">
+		<div class="container">
+			<div class="row align-items-center">
+				<div class="col-lg-6">
+					<div class="featured-content">
+						<span>Special Offer</span>
+						<h2>Premium Collections</h2>
+						<p>Discover our handpicked premium items at special prices. Limited time offer.</p>
+						<a href="/products" class="btn btn-outline-light">Shop Now</a>
+					</div>
+				</div>
+				<div class="col-lg-6">
+					<img src="img/featured-banner.jpg" alt="Featured Collection" class="img-fluid">
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Latest Products -->
+	<div class="latest-products">
+		<div class="container">
+			<div class="section-title">
+				<h2>Latest Products</h2>
+				<p>Check out our newest arrivals</p>
+			</div>
+			<div class="row">
+				<div class="col-lg-3 col-md-4 col-sm-6" th:each="p:${products}">
+					<div class="product-card">
+						<div class="product-badge" th:if="${p.discount > 0}">
+							<span>[[${p.discount}]]% OFF</span>
+						</div>
+						<div class="product-thumb">
+							<img th:src="@{'img/product_img/'+${p.image}}" alt="Product">
+							<div class="product-overlay">
+								<a th:href="@{'/product/'+${p.id}}" class="btn btn-sm btn-outline-light">Quick View</a>
+							</div>
+						</div>
+						<div class="product-info">
+							<h3 class="product-title">
+								<a th:href="@{'/product/'+${p.id}}">[[${p.title}]]</a>
+							</h3>
+							<div class="product-price">
+								<span class="current-price">[[${p.discountPrice}]] MAD</span>
+								<span class="old-price" th:if="${p.discount > 0}">[[${p.price}]] MAD</span>
+							</div>
+							<div class="product-action">
+								<a th:href="@{'/product/'+${p.id}}" class="btn btn-primary btn-sm">View Details</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="text-center mt-4">
+				<a href="/products" class="btn btn-outline-primary">View All Products</a>
+			</div>
+		</div>
+	</div>
+
+
+
+	<!-- Newsletter -->
+	<div class="newsletter-section">
+		<div class="container">
+			<div class="row align-items-center">
+
+				<div class="col-md-6">
+					<form class="newsletter-form">
+<!--						<div class="input-group">-->
+<!--							<input type="email" class="form-control" placeholder="Your email address">-->
+<!--							<button class="btn btn-primary" type="submit">Subscribe</button>-->
+<!--						</div>-->
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</section>
+</body>
+</html>
